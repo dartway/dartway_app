@@ -1,14 +1,11 @@
 import 'dart:async';
 
 import 'package:dartway_toolkit/dartway_toolkit.dart';
-import 'package:dartway_toolkit/src/configs/dw_services_config.dart';
 import 'package:dartway_toolkit/src/core/dw_toolkit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
-import '../configs/dw_toolkit_config.dart';
 
 typedef DwAppInitializer = FutureOr<bool> Function(WidgetRef ref);
 
@@ -44,6 +41,7 @@ class DartWayApp {
     }
 
     DwToolkit.init(dwToolkitConfig);
+    routingConfig.init();
   }
 
   void run() {
@@ -79,7 +77,7 @@ class DartWayApp {
   }
 }
 
-class _DartWayAppWidget extends ConsumerWidget {
+class _DartWayAppWidget extends ConsumerStatefulWidget {
   final String title;
   final ProviderBase<RouterConfig<Object>> routerProvider;
   final List<DwAppInitializer> initializers;
@@ -95,41 +93,58 @@ class _DartWayAppWidget extends ConsumerWidget {
     required this.loadingConfig,
   });
 
-  Future<bool> _runInitializers(WidgetRef ref) async {
-    for (final fn in initializers) {
-      final result = await fn(ref);
-      if (!result) return false;
+  @override
+  ConsumerState<_DartWayAppWidget> createState() => _DartWayAppWidgetState();
+}
+
+class _DartWayAppWidgetState extends ConsumerState<_DartWayAppWidget> {
+  bool _initialized = false;
+  bool _failed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _runInitializers();
+  }
+
+  Future<void> _runInitializers() async {
+    try {
+      for (final fn in widget.initializers) {
+        final ok = await fn(ref);
+        if (!ok) throw Exception('initializer failed');
+      }
+      setState(() => _initialized = true);
+    } catch (e, s) {
+      DwToolkit.handleError(e, s);
+      setState(() => _failed = true);
     }
-    return true;
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return FutureBuilder<bool>(
-      future: _runInitializers(ref),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return loadingConfig.loadingScreen;
-        if (snapshot.data != true) return loadingConfig.errorScreen;
+  Widget build(BuildContext context) {
+    if (_failed) return widget.loadingConfig.errorScreen;
+    if (!_initialized) return widget.loadingConfig.loadingScreen;
 
-        return MaterialApp.router(
-          routerConfig: ref.watch(routerProvider),
+    final router = ref.watch(widget.routerProvider);
 
-          debugShowCheckedModeBanner:
-              flutterAppConfig.debugShowCheckedModeBanner,
-          title: title,
-          theme: flutterAppConfig.theme,
-          darkTheme: flutterAppConfig.darkTheme,
-          themeMode: flutterAppConfig.themeMode,
-          scrollBehavior: flutterAppConfig.scrollBehavior,
-          restorationScopeId: flutterAppConfig.restorationScopeId,
-          builder: flutterAppConfig.builder,
-          supportedLocales: flutterAppConfig.supportedLocales,
-          localizationsDelegates: flutterAppConfig.localizationDelegates,
-          localeResolutionCallback: flutterAppConfig.localeResolutionCallback,
-          localeListResolutionCallback:
-              flutterAppConfig.localeListResolutionCallback,
-        );
-      },
+    return MaterialApp.router(
+      routerConfig: router,
+
+      debugShowCheckedModeBanner:
+          widget.flutterAppConfig.debugShowCheckedModeBanner,
+      title: widget.title,
+      theme: widget.flutterAppConfig.theme,
+      darkTheme: widget.flutterAppConfig.darkTheme,
+      themeMode: widget.flutterAppConfig.themeMode,
+      scrollBehavior: widget.flutterAppConfig.scrollBehavior,
+      restorationScopeId: widget.flutterAppConfig.restorationScopeId,
+      builder: widget.flutterAppConfig.builder,
+      supportedLocales: widget.flutterAppConfig.supportedLocales,
+      localizationsDelegates: widget.flutterAppConfig.localizationDelegates,
+      localeResolutionCallback:
+          widget.flutterAppConfig.localeResolutionCallback,
+      localeListResolutionCallback:
+          widget.flutterAppConfig.localeListResolutionCallback,
     );
   }
 }
