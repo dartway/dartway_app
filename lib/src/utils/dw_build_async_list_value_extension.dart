@@ -1,5 +1,4 @@
-import 'package:dartway_toolkit/src/core/dw_toolkit.dart';
-import 'package:dartway_toolkit/src/ui_extensions/dw_async_value_extension.dart';
+import 'package:dartway_app/dartway_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,16 +13,14 @@ extension DwAsyncValueListX<T> on AsyncValue<List<T>> {
     bool skipLoadingOnRefresh = true,
   }) {
     assert(
-      loadingItem != null || DwToolkit.isDefaultModelsGetterSetUp,
+      loadingItem != null || dw.isDefaultModelsGetterSetUp,
       'Can not handle loading value for dwBuildListAsync'
       'Either loadingItem must be provided or DwToolkitConfig.defaultModelGetter must be set.',
     );
 
     final items = List.generate(
       loadingItemsCount,
-      (_) =>
-          loadingItem ??
-          (null is T ? null as T : DwToolkit.getDefaultModel<T>()),
+      (_) => loadingItem ?? (null is T ? null as T : dw.getDefaultModel<T>()),
     );
 
     return dwBuildAsync(

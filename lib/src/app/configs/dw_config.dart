@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
-class DwToolkitConfig {
-  const DwToolkitConfig({
+class DwConfig {
+  const DwConfig({
     this.globalErrorHandler = debugInfoErrorHandler,
     this.defaultModelGetter,
+    this.useSharedPreferences = true,
   });
+
+  final bool useSharedPreferences;
 
   final void Function(Object error, StackTrace stackTrace)? globalErrorHandler;
   final T Function<T>()? defaultModelGetter;

@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-class DwFlutterAppConfig {
+class DwFlutterAppOptions {
   final ThemeData? theme;
   final ThemeData? darkTheme;
   final ThemeMode themeMode;
@@ -16,7 +16,7 @@ class DwFlutterAppConfig {
   final List<LocalizationsDelegate<dynamic>> localizationDelegates;
   final Widget Function(BuildContext, Widget?)? builder;
 
-  DwFlutterAppConfig({
+  DwFlutterAppOptions({
     this.theme,
     this.darkTheme,
     this.themeMode = ThemeMode.system,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DwLoadingConfig {
+class DwAppLoadingOptions {
   static const defaultErrorScreen = Center(
     child: Directionality(
       textDirection: TextDirection.ltr,
@@ -10,12 +10,12 @@ class DwLoadingConfig {
     ),
   );
 
-  const DwLoadingConfig.withoutNativeSplash({
+  const DwAppLoadingOptions.withoutNativeSplash({
     this.loadingScreen = const Center(child: CircularProgressIndicator()),
     this.errorScreen = defaultErrorScreen,
   }) : useNativeSplash = false;
 
-  const DwLoadingConfig.withNativeSplash({
+  const DwAppLoadingOptions.withNativeSplash({
     this.errorScreen = defaultErrorScreen,
   }) : loadingScreen = const SizedBox.shrink(),
        useNativeSplash = true;

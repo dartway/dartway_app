@@ -1,4 +1,4 @@
-import 'package:dartway_toolkit/src/core/dw_toolkit.dart';
+import 'package:dartway_app/dartway_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -19,19 +19,18 @@ extension DwAsyncValueX<T> on AsyncValue<T> {
     // skipError: skipError,
     data: (data) => childBuilder(data),
     error: (error, stackTrace) {
-      DwToolkit.handleError(error, stackTrace);
+      dw.handleError(error, stackTrace);
       return errorWidget;
     },
     loading: () {
       if (loadingWidget != null) return loadingWidget;
 
-      if (loadingValue == null && !DwToolkit.isDefaultModelsGetterSetUp) {
+      if (loadingValue == null && !dw.isDefaultModelsGetterSetUp) {
         return const SizedBox.shrink();
       }
       return Skeletonizer(
         child: childBuilder(
-          loadingValue ??
-              (null is T ? null as T : DwToolkit.getDefaultModel<T>()),
+          loadingValue ?? (null is T ? null as T : dw.getDefaultModel<T>()),
         ),
       );
     },
