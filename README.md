@@ -11,7 +11,7 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/to/develop-packages).
 -->
 
-A utility package that brings together a variety of helpers to simplify and accelerate Flutter development:
+A convenience package that brings together a variety of helpers to simplify and accelerate Flutter development:
 
 - Easier app initialization and services and configs access
 - Native splash screen setup via flutter_native_splash
