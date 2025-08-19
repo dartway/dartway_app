@@ -44,10 +44,10 @@ class _DwNotificationsListenerState
       final handler = widget.handlers[event.runtimeType];
       final safeContext = DwNotificationsListener.overlay.context;
 
-      if (handler != null) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          handler.show(safeContext, event);
-        });
+      if (handler != null && safeContext.mounted) {
+        // WidgetsBinding.instance.addPostFrameCallback((_) {
+        handler.show(safeContext, event);
+        // });
       }
     });
   }

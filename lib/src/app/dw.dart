@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:dartway_app/src/app/configs/dw_config.dart';
-import 'package:dartway_app/src/callbacks/dw_callback.dart';
+import 'package:dartway_app/src/callbacks/dw_callback_old.dart';
 import 'package:dartway_app/src/notifications/domain/dw_ui_notification.dart';
 import 'package:dartway_app/src/notifications/service/dw_notifications_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'parts/dw_navigation.dart';
@@ -47,7 +48,7 @@ class _Dw {
     return getter<T>();
   }
 
-  DwCallback call<T>(
+  DwCallbackOld call<T>(
     FutureOr<T> Function() action, {
     String? onSuccessNotification,
     FutureOr<DwUiNotification> Function(T actionResult)?
@@ -55,7 +56,7 @@ class _Dw {
     String? onErrorNotification,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    return DwCallback<T>.create(
+    return DwCallbackOld<T>.create(
       action,
       onSuccessNotification: onSuccessNotification,
       customNotificationBuilder: customNotificationBuilder,
@@ -64,7 +65,7 @@ class _Dw {
     );
   }
 
-  DwCallback contextCall<T>(
+  DwCallbackOld contextCall<T>(
     BuildContext context,
     FutureOr<T> Function() action, {
     required FutureOr<void> Function(
@@ -78,7 +79,7 @@ class _Dw {
     String? onErrorNotification,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    return DwCallback<T>.create(
+    return DwCallbackOld<T>.create(
       action,
       context: context,
       onSuccessNotification: onSuccessNotification,

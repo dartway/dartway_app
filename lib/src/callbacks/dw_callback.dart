@@ -1,49 +1,45 @@
 import 'dart:async';
 
 import 'package:dartway_app/dartway_app.dart';
-import 'package:dartway_app/src/notifications/domain/dw_ui_notification.dart';
 import 'package:flutter/material.dart';
 
 class DwCallback<T> {
-  final Future<void> Function() _execute;
+  final Future<void> Function(BuildContext context) _execute;
 
   const DwCallback._(this._execute);
 
-  Future<void> call() => _execute();
+  Future<void> call(BuildContext context) => _execute(context);
 
   factory DwCallback.create(
     FutureOr<T> Function() action, {
-    BuildContext? context,
-    FutureOr<void> Function(BuildContext mountedContext, T actionResult)?
-    followUpIfMountedAction,
     String? onSuccessNotification,
-    FutureOr<DwUiNotification?> Function(T)? customNotificationBuilder,
     String? onErrorNotification,
+    FutureOr<DwUiNotification?> Function(T value)? customNotificationBuilder,
+    FutureOr<void> Function(BuildContext context, T value)? followUpIfMounted,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    return DwCallback._(() async {
+    return DwCallback._((context) async {
       try {
         final value = await action();
 
-        if ((value != null || null is T) && onSuccessNotification != null) {
+        if (onSuccessNotification != null) {
           dw.notify.success(onSuccessNotification);
         }
 
         if (customNotificationBuilder != null) {
-          final notification = await customNotificationBuilder(value);
-          if (notification != null) {
-            dw.notify.custom(notification);
+          final customNotification = await customNotificationBuilder(value);
+          if (customNotification != null) {
+            dw.notify.custom(customNotification);
           }
         }
 
-        if (context?.mounted == true && followUpIfMountedAction != null) {
-          await followUpIfMountedAction(context!, value);
+        if (followUpIfMounted != null && context.mounted) {
+          await followUpIfMounted(context, value);
         }
       } catch (error, stackTrace) {
         if (onErrorNotification != null) {
           dw.notify.error(onErrorNotification);
         }
-
         onError?.call(error, stackTrace);
         dw.handleError(error, stackTrace);
       }

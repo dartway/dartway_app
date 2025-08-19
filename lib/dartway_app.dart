@@ -5,6 +5,8 @@ export 'src/app/configs/dw_routing_config.dart';
 export 'src/app/dw.dart';
 export 'src/app/dw_app.dart';
 export 'src/callbacks/dw_callback.dart';
+export 'src/callbacks/dw_callback_old.dart';
+export 'src/notifications/domain/dw_ui_notification.dart';
 export 'src/ui_kit/infinite_list_view/domain/dw_infinite_list_view_config.dart';
 export 'src/ui_kit/infinite_list_view/domain/dw_infinite_list_view_grouped_item.dart';
 export 'src/ui_kit/infinite_list_view/infinite_list_view.dart';
