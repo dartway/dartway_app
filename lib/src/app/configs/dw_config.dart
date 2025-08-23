@@ -5,7 +5,7 @@ class DwConfig {
     this.globalErrorHandler = debugInfoErrorHandler,
     this.defaultModelGetter,
     this.useSharedPreferences = true,
-    this.flutterDotEnvFile,
+    this.flutterDotEnvFile = '.env',
   });
 
   final bool useSharedPreferences;
